@@ -18,6 +18,7 @@ group_aliases = {"Audio":"Multimedia","AudioVideo":"Multimedia","Network":"Inter
 ignoreList = ("evince-previewer", "Ted",  "wingide3.2", "python3.4", "feh","xfce4-power-manager-settings" )
 terminal_string = "evte -e"         # your favourites terminal exec string
 simpleOBheader = False  # print full xml style OB header
+VERSION="1.1.8"
 
 # --- End of user config ---
 
@@ -72,8 +73,6 @@ class dtItem(object):
           app_icon=icon_theme.lookup_icon(icon_name,48,0)
           if app_icon:
              self.Icon=app_icon.get_filename() 
-
-
 
 
     def addTerminal(self, data):
@@ -168,13 +167,14 @@ def process_dtfile(dtf, catDict): #process this file & extract relevant info - N
                     #As we're only working with true applications, we can store any that
                     #are 'lost' here
                     if len(categories) <= 0:
-                        categories = "Application"
+                       categories = "Application"
+
                     cats = []
-		    # DEBUG 
-		    dtCats = categories.split(';')
-	            for cat in dtCats:
-			result = process_category(cat,  cats)
-	            myApplication.addCategories(cats)
+                    dtCats = categories.split(';')
+                    
+                    for cat in dtCats:
+			           process_category(cat,  cats)
+                    myApplication.addCategories(cats)
 
                     try:
                         myApplication.addComment(myDesktopFile.get('Desktop Entry','Comment'))
@@ -188,12 +188,18 @@ def process_dtfile(dtf, catDict): #process this file & extract relevant info - N
                     active == True 
 
                     #store everything
-	            for cat in myApplication.Categories:
-                        #Check for duplicates here.
-                        
-                	catDict[cat].append(myApplication)
-                else:
-                    debug_print("<DEBUG>: Not an application")
+                for cat in myApplication.Categories:
+                    found=False
+                    for myApp in catDict[cat]:    
+                        found=False
+                        debug_print("<DEBUG>Category: '"+myApp.Name.lower()+"' Adding: '"+myApplication.Name.lower()+"'")
+                        if myApp.Name.lower().strip() == myApplication.Name.lower().strip():
+                         found=True
+                    if not found:
+                        catDict[cat].append(myApplication)
+                        debug_print("<DEBUG> Adding: "+myApplication.Name)
+                    else:
+                       debug_print("<DEBUG>: Not Adding "+myApplication.Name)
 
 
 
@@ -292,6 +298,7 @@ if __name__ == "__main__":
         print '<openbox_pipe_menu>'       # magic header
     else:
         print '<?xml version="1.0" encoding="UTF-8" ?><openbox_pipe_menu xmlns="http://openbox.org/"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://openbox.org/" >'       # magic header
+        print("<menu id=\"VERSION\" label=\"Obamenu "+VERSION+"\" ></menu>")
     appGroupLen = len(application_groups)
     for ag in range(appGroupLen ):
         catList = categoryDict[application_groups[ag]]
