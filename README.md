@@ -18,14 +18,17 @@ used to create menu items.
 
 This version is still under development, but the Master branch is stable and eminantly usable.
 
-Installation:
+**Installation:**
 
 1. Download the file 'obamenu', and unpack it somewhere. 
 2. Edit your menu.xml file (normally found in ./config/openbox/)
 3. Insert the following lines: 
+```
  <menu execute="/location/to/obamenu/obamenu" id="My Menu" label="My Menu" />
- 
+ ```
  Make sure that you use the full path to the location of the script. 
+ 
  4. Reconifigure openbox
  5. You should now see a new menu item labelled "My Menu". If you hover over that, it should open as you would expect the menu too.
+ 
  NOTE: This version of Obamenu does not ignore applications (as the previous version did). It also, however, doesn't search down GNOME/KDE locations to find software. As such, these items may not show up in the default install.
