@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
 # Original Version by: http://rmoe.anukis.de/obamenu.html
 #
 # Updated Version by: BlackXanthus @ Psy23
-# Version 1.1.8 
+# Version 1.1.8  - Updated 2019
 # 
 #------Imports---
 
@@ -11,28 +12,13 @@
 import glob, ConfigParser,gtk, os.path
 from os import path
 
-# ---- config ---
-#applications_dirs = ("/usr/share/applications", "/var/lib/flatpack/exports/share/applications", )
-#applications_dirs = ("/var/lib/flatpak/exports/share/applications", "/usr/share/applications", )
-#image_dir_base = "/usr/share" # without "pixmaps" -/usr/local/share in FreeBSD, /usr/share on linux
-#icon_Theme = "Humanity"
-#image_cat_prefix = "applications-"  # if empty will create no icon text only menu
-#application_groups = ("Office",  "Development",  "Graphics",
-#"Internet",  "Games", "System",  "Multimedia",  "Utilities",
-#"Settings", "Application")
-#group_aliases = {"Audio":"Multimedia","AudioVideo":"Multimedia","Network":"Internet","Game":"Games", "Utility":"Utilities", "GTK":"",  "GNOME":""}
-#ignore_list = ("evince-previewer", "Ted",  "wingide3.2", "python3.4", "feh","xfce4-power-manager-settings" )
-#terminal_string = "evte -e"         # your favourites terminal exec string
-#simpleOBheader = False  # print full xml style OB header
-
 #----Conf File Locations----
-
 theConfigFile = ConfigParser.ConfigParser()
 dict_DefaultConfig = dict()
 CONF_LOCATION=".config/openbox/"
 CONF_FILENAME="obamenu.ini"
 VERSION="1.1.8"
-
+categoryDict = {}
 # --- End of user config ---
 
 #--- Enable Debug printing
@@ -62,8 +48,11 @@ class dtItem(object):
 
     def addIcon(self, data):
         image_dir_base = get("image_dir_base")
+
         self.Icon = ""
+
         image_dir = image_dir_base + "/pixmaps/"
+
         di = data.strip()
         if not (len(di) < 3):
           dix = di.find("/")      # is it a full path?
@@ -128,7 +117,6 @@ def set(propKey,propValue):
       except:
          debug_print("<DEBUG>"+propKey+" propValue"+propValue+" - could not be added")
 
-
 def get(propSection):
 
     configValue=""
@@ -169,7 +157,6 @@ def write_configfile():
     except:
         print(err)
         print("Config Writing Fail")
-   
       
 def getCatIcon(cat):
     image_dir_base = get("image_dir_base")
@@ -243,24 +230,6 @@ def process_category(cat, curCats):
 
 	return cat 
 
-
-
-#def process_category_old(cat, curCats,  appGroups = application_groups,  aliases = group_aliases ):
-    
-#	application_groups = get("application_groups")
-#	appGroups = application_groups.split(",")
-#	# first process aliases
-#	if aliases.has_key(cat):
-#		if aliases[cat] == "":
-#			return ""                               # ignore this one
-#		cat = aliases[cat]
-#	if cat in appGroups and cat not in curCats:  # valid categories only and no doublettes, please
-#		curCats.append(cat)
-#		return cat
-#		if cat == "":
-#				cat = "Application"
-#	return ""
-
 def debug_print(ErrorToPrint):
         if(DEBUG):
             print(ErrorToPrint)
@@ -314,7 +283,6 @@ def process_dtfile(dtf, catDict): #process this file & extract relevant info - N
                     found=False
                     for myApp in catDict[cat]:    
                         found=False
-                        #debug_print("<DEBUG>Category: '"+myApp.Name.lower()+"' Adding: '"+myApplication.Name.lower()+"'")
                         if myApp.Name.lower().strip() == myApplication.Name.lower().strip():
                          found=True
                     if not found:
@@ -335,65 +303,7 @@ def process_dtfile(dtf, catDict): #process this file & extract relevant info - N
                 debug_print("<DEBUG>: Not a valid Desktop File")
 
 
-def process_dtfile_old(dtf,  catDict):  # process this file & extract relevant info
-	active = False          # parse only after "[Desktop Entry]" line
-	fh = open(dtf,  "r")
-	lines = fh.readlines()
-#	this = dtItem(dtf) // Removed because 'this' is a reserved pythone word!
-        myApplication = dtItem(dtf)
-	for l in lines:
-		l = l.strip()
-		if l == "[Desktop Entry]":
-			active = True
-			continue
-		if active == False:     # we don't care about licenses or other comments
-			continue
-		if l == None or len(l) < 1 or l[0] == '#':
-			continue
-		if l[0]== '[' and l !=  "[Desktop Entry]":
-			active = False
-			continue
-		# else
-		eqi = l.split('=')
-		if len(eqi) < 2:
-			print "Error: Invalid .desktop line'" + l + "'"
-			continue
-		# Check what it is ...
-		if eqi[0] == "Name":
-			myApplication.addName(eqi[1])
-		elif eqi[0] == "Comment":
-			myApplication.addComment(eqi[1])
-                #This doesn't work if there is more than one command line argument
-		elif eqi[0] == "Exec":
-			myApplication.addExec(eqi[1])
-		elif eqi[0] == "Icon":
-			myApplication.addIcon(eqi[1])
-		elif eqi[0] == "Terminal":
-			myApplication.addTerminal(eqi[1])
-		elif eqi[0] == "Type":
-			if eqi[1] != "Application":
-				continue
-			myApplication.addType(eqi[1])
-		elif eqi[0] == "Categories":
-			if eqi[1] and eqi[1][-1] == ';':
-				eqi[1] = eqi[1][0:-1]
-			cats = []
-			# DEBUG 
-			dtCats = eqi[1].split(';')
-			for cat in dtCats:
-				result = process_category(cat,  cats)
-			myApplication.addCategories(cats)
-		else:
-			continue
-	# add to catDict
-	#this.dprint()
-        if myApplication.Categories == "":
-               this.Categories=="Application"
-	if len(myApplication.Categories) > 0:        # don't care about stuff w/o category
-		   for cat in myApplication.Categories:
-			   catDict[cat].append(myApplication)
-
-categoryDict = {}
+#--------Main Program loop------------------
 
 if __name__ == "__main__":
 
@@ -448,9 +358,11 @@ if __name__ == "__main__":
         print '<openbox_pipe_menu>'       # magic header
     else:
         print '<?xml version="1.0" encoding="UTF-8" ?><openbox_pipe_menu xmlns="http://openbox.org/"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://openbox.org/" >'       # magic header
-        print("<menu id=\"VERSION\" label=\"Obamenu "+VERSION+"\" ></menu>")
+        print("<separator label=\"Obamenu "+VERSION+"\" />")
+       # print("<separator label=\"Favourites\" />")
+       # print("<separator label=\"Dynamic Menu\" />")
     appGroupLen = len(application_groups)
-    for ag in range(appGroupLen ):
+    for ag in range(appGroupLen):
         catList = categoryDict[application_groups[ag]]
         if len(catList) < 1:
             continue                # don't create empty menus
