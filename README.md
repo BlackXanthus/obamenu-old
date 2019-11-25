@@ -31,6 +31,9 @@ This version is still under development, but the Master branch is stable and emi
  4. Reconifigure openbox
  5. You should now see a new menu item labelled "My Menu". If you hover over that, it should open as you would expect the menu too.
  
+ The MASTER branch contains the most up-to-date stable code. Use this for preference. 
+ The RELEASED code contains the code that achieved the basic aim of updating obamenu to have sensible settings, icons, and file search locations. 
+ 
  NOTE: This version of Obamenu does not ignore applications (as the previous version did). It also, however, doesn't search down GNOME/KDE locations to find software. As such, these items may not show up in the default install.
  
  NOTE: Openbox does cache dynamic menues(it does this behind the scenes), as such if you use the default obamenu, AND THEN use this menu, you may find that icons will be back missing. Wait a few moments, then try again. 
