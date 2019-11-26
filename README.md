@@ -1,7 +1,7 @@
-# obamenu
+# obamenu - NOTE: This Repository is now superseeded by : https://github.com/BlackXanthus/obamenu
 Obamenu 1.1.8
 
-Obamenu is the grandfather of creating menues on Openbox. 
+Obamenu is the grandfather of creating menues on Openbox: 
 
 However, overtime it has languished at version 1.1.7, with no active development. In truth, there has been
 very little need for development of this little script - yet time has not been kind. 
