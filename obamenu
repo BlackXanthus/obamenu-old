@@ -4,6 +4,9 @@
 # Original Version by: http://rmoe.anukis.de/obamenu.html
 #
 # Updated Version by: BlackXanthus @ Psy23
+# Source: https://github.com/BlackXanthus/obamenu
+#  
+#
 # Version 1.1.8  - Updated 2019
 # 
 #------Imports---
@@ -282,7 +285,6 @@ def process_dtfile(dtf, catDict): #process this file & extract relevant info - N
                 for cat in myApplication.Categories:
                     found=False
                     for myApp in catDict[cat]:    
-                        found=False
                         if myApp.Name.lower().strip() == myApplication.Name.lower().strip():
                          found=True
                     if not found:
